@@ -1,0 +1,3 @@
+[submodule "gnomonics"]
+	path = gnomonics
+	url = https://github.com/erudit-recommandation/gnomonics.git
