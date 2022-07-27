@@ -14,6 +14,10 @@ import time
 
 app = Flask(__name__)
 
+
+model_path = Path("./models/d2v_articles/d2v.model")
+model = None #Word2Vec.load(str(model_path))
+
 """
 convert an input text to an inferance vector
 """
@@ -56,9 +60,6 @@ def convert_to_json(recommandation_indexes):
     json_recommandation = json.dumps(map_recommandation)
     return json_recommandation
 
-
-model_path = Path("./models/d2v_articles/d2v.model")
-model = Word2Vec.load(str(model_path))
 
 
 @app.route("/")
