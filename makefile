@@ -8,3 +8,6 @@ run:
 	flask run
 run-eb:
 	eb local run --port 8094
+
+run-bash-docker:
+	docker run --rm -it --entrypoint bash text_analysis_service
