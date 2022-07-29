@@ -1,4 +1,5 @@
 models/*
+!models/.gitkeep
 .elasticbeanstalk/*
 .git
 .gitignore# Elastic Beanstalk Files
