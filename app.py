@@ -18,7 +18,7 @@ app = Flask(__name__)
 SECRET_KEY = os.getenv("SECRET")
 
 model_path = Path("./models/d2v.model")
-model = None  # Word2Vec.load(str(model_path))
+model = None 
 
 """
 convert an input text to an inferance vector
@@ -92,6 +92,7 @@ def gemsim():
 
 @app.route("/model", methods=['POST'])
 def post_models():
+    global model
     d2v_file = request.files['d2v.model']
     syn1neg_file = request.files['d2v.model.syn1neg.npy']
     vector_file = request.files['d2v.model.wv.vectors.npy']

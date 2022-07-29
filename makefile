@@ -6,3 +6,5 @@ create-docker:
 run:
 	export FLASK_DEBUG=1
 	flask run
+run-eb:
+	eb local run --port 8094
