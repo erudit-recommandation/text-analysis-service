@@ -3,3 +3,6 @@ run-docker:
 
 create-docker:
 	docker build -t text_analysis_service .
+run:
+	export FLASK_DEBUG=1
+	flask run
