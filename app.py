@@ -10,12 +10,32 @@ import json
 import argparse
 import os
 import time
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
-load_dotenv()
+import argparse
+
 app = Flask(__name__)
 
-SECRET_KEY = os.getenv("SECRET")
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', required=False,
+                    action="store_true", help="developpement mode")
+
+parser.add_argument('-p', required=False,
+                    action="store_true", help="production mode")
+args = parser.parse_args()
+config = None
+if args.d:
+    print("developpement mode")
+    config = dotenv_values(".env_dev")
+elif args.p:
+    print("production mode")
+    config = dotenv_values(".env")
+else:
+    print("developpement mode")
+    config = dotenv_values(".env_dev")
+
+SECRET_KEY = config["SECRET"]
+
 
 model_path = Path("./models/d2v.model")
 model = None 
@@ -118,6 +138,7 @@ def render_models_page():
 
 
 if __name__ == "__main__":
+
     if os.path.exists(model_path):
         model = Word2Vec.load(str(model_path))
     print("server ready")
