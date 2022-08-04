@@ -11,3 +11,9 @@ run-eb:
 
 run-bash-docker:
 	docker run --rm -it --entrypoint bash text_analysis_service
+
+run-inside-docker:
+	python3 app.py -dd
+
+run-inside-docker-production:
+	python3 app.py -p

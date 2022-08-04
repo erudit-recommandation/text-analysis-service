@@ -13,4 +13,4 @@ RUN python3 init.py
 
 EXPOSE 8092
 
-CMD [ "python3", "app.py -p"]
+CMD [ "make", "run-inside-docker-production"]
