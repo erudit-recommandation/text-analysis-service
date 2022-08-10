@@ -24,7 +24,7 @@ La troisième est via docker pour le déploiement avec `make create-docker` suiv
 ### GET `/`
 page d'acceuil indique si le service est opérationnel
 
-### POST `/`gemsim``
+### POST `/gemsim`
 se sert du modèle `gemsim` afin de retourner les index dans la base de données des textes similaire au texte envoyé.
 
 #### Envoi
