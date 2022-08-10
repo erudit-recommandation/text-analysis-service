@@ -5,7 +5,7 @@ Service de [Nemo](https://github.com/erudit-recommandation/Nemo) qui permet l'an
 Linux, non tester sur Windows (par contre avec Docker, il n'y a pas de problème)
 
 
-# Installation et Dépense
+# Installation et dépendances
 Les dépendances sont dans le fichier `requirement.txt`, ainsi que le module `fr_core_news_sm` de `spacy` et les modules `punkt` et `stopwords`. Il suffit de lancer la commande `make install` pour tout installer.
 
 Le répertoire [initialisation-service](https://github.com/erudit-recommandation/initialisation-service) permet de générer le fichier `gemsim` nécessaire au fonctionnement du service.
