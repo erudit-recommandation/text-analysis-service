@@ -29,7 +29,7 @@ se sert du modèle `gemsim` afin de retourner les index dans la base de données
 
 #### Envoi
 
-```
+```json
 {
     "text": string \\ texte de référence
     "n": int \\ nombre maximal de résultats
@@ -38,7 +38,7 @@ se sert du modèle `gemsim` afin de retourner les index dans la base de données
 
 #### Retour
 
-```
+```json
 {
     "{index}": int \\ l'index dans la base de données ainsi que le score de similitude 
 }
