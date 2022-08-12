@@ -38,7 +38,7 @@ SECRET_KEY = config["SECRET"]
 
 
 model_path = Path("./models/d2v.model")
-model = None 
+model = None
 
 """
 convert an input text to an inferance vector
@@ -46,9 +46,7 @@ convert an input text to an inferance vector
 
 
 def convert_to_inf_vec(text):
-    inf_txt = "la crise de l'environnement"
-
-    inf_vec = lemmatizing_text(inf_txt.split(' '), language='french')
+    inf_vec = lemmatizing_text(text.split(' '), language='french')
     inf_vec = [l for l in inf_vec if len(l) > 0]
     return inf_vec
 
