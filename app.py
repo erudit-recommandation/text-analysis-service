@@ -89,8 +89,8 @@ def hello_world():
         return "Le service d'analyse de texte est en fonction, mais le modèle n'est pas définit contacter l'administrateur pour utiliser le service"
 
 
-@app.route("/gemsim", methods=['POST'])
-def gemsim():
+@app.route("/gensim", methods=['POST'])
+def gensim():
     if model is None:
         return "Le modèle n'est pas définit contacter l'administrator", 500
     content_type = request.headers.get('Content-Type')
