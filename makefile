@@ -10,8 +10,7 @@ create-docker-debug:
 create-docker:
 	docker build -t text_analysis_service .
 run:
-	export FLASK_DEBUG=1
-	flask run
+	export FLASK_DEBUG=1 && flask run
 run-eb:
 	eb local run --port 8094
 

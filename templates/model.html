@@ -6,16 +6,25 @@
 </head>
 
 <body>
-  <h1>Envoyer un nouveau modèle</h1>
-  <form method="POST" action="/model" enctype="multipart/form-data">
+  <h1>Envoyer un nouveau modèle pour le corpus {{ corpus }}</h1>
+  {% if largerModel %}
+  <a href="/model/{{ corpus }}?larger=false">Générer un petit modèle</a>
+  {% else %}
+  <a href="/model/{{ corpus }}?larger=true">Générer un grand modèle</a>
+  {% endif %}
+
+  <form method="POST" action="/model/{{corpus}}" enctype="multipart/form-data">
     <label for="d2v.model">d2v.model</label>
     <p><input type="file" name="d2v.model" accept=".model"></p>
+    {% if largerModel %}
+      <label for="d2v.model.syn1neg.npy">d2v.model.syn1neg.npy</label>
+      <p><input type="file" name="d2v.model.syn1neg.npy" accept=".model.syn1neg.npy"></p>
 
-    <label for="d2v.model.syn1neg.npy">d2v.model.syn1neg.npy</label>
-    <p><input type="file" name="d2v.model.syn1neg.npy" accept=".model.syn1neg.npy"></p>
+      <label for="d2v.model.wv.vectors.npy">d2v.model.wv.vectors.npy</label>
+      <p><input type="file" name="d2v.model.wv.vectors.npy" accept=".model.wv.vectors.npy"></p>
+    {% endif %}
 
-    <label for="d2v.model.wv.vectors.npy">d2v.model.wv.vectors.npy</label>
-    <p><input type="file" name="d2v.model.wv.vectors.npy" accept=".model.wv.vectors.npy"></p>
+    
 
     <label for="password"> mot de passe </label>
     <p><input type="password" name="password"></p>
