@@ -67,7 +67,7 @@ list(tuple(int, float))
 def get_recommandations(inf_vec, n, corpus):
     global models
     recommandation_indexes = models[corpus].dv.similar_by_vector(
-        models.infer_vector(inf_vec), topn=n)  # ,restrict_vocab=10000)
+        models[corpus].infer_vector(inf_vec), topn=n)  # ,restrict_vocab=10000)
     return recommandation_indexes[:n]
 
 
@@ -83,7 +83,7 @@ def convert_to_json(recommandation_indexes):
     map_recommandation = {}
     for rec in recommandation_indexes:
         map_recommandation[rec[0]] = rec[1]
-    return json_recommandation
+    return map_recommandation
 
 
 @app.route("/")
@@ -100,10 +100,10 @@ def gensim():
         return "Le modèle n'est pas définit contacter l'administrator", 500
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
-        json = request.json
-        text = json["text"]
-        n = json["n"]
-        corpus = json["corpus"]
+        requestJson = request.json
+        text = requestJson["text"]
+        n = requestJson["n"]
+        corpus = requestJson["corpus"]
         print("-- query: {} --".format(text))
         inf_vec = convert_to_inf_vec(text=text)
         recommandation_indexes = get_recommandations(
