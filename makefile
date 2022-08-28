@@ -27,3 +27,7 @@ install:
 	pip3 install -r requirement.txt
 	python3 -m spacy download fr_core_news_sm
 	python3 init.py
+
+deploy:
+	rm -r ./models/*
+	eb deploy
