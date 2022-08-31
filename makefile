@@ -29,5 +29,5 @@ install:
 	python3 init.py
 
 deploy:
-	rm -r ./models/*
+	rm -r ./models/* || true
 	eb deploy

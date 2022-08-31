@@ -38,21 +38,31 @@ else:
 SECRET_KEY = config["SECRET"]
 
 models = {}
-
+FR = "french"
+ENG = "english"
 for file in os.listdir("./models"):
     d = os.path.join("./models", file)
     if os.path.isdir(d):
-        model_path = Path(os.path.join(d,"d2v.model"))
-        print("loading {}".format(model_path))
-        models[model_path.parts[-2]] = Word2Vec.load(str(model_path))
+        model_path_fr = Path(os.path.join(d, "d2v_{}.model".format(FR)))
+        model_path_eng = Path(os.path.join(d, "d2v_{}.model".format(ENG)))
+        if os.path.exists(model_path_fr):
+            print("loading {}".format(model_path_fr))
+            models[model_path_fr.parts[-2]
+                   ] = (Word2Vec.load(str(model_path_fr)), FR)
+        elif os.path.exists(model_path_eng):
+            print("loading {}".format(model_path_eng))
+            models[model_path_eng.parts[-2]
+                   ] = (Word2Vec.load(str(model_path_eng)), ENG)
+
 
 """
 convert an input text to an inferance vector
 """
 
 
-def convert_to_inf_vec(text):
-    inf_vec = lemmatizing_text(text.split(' '), language='french')
+def convert_to_inf_vec(text, language):
+    print("--{}--".format(language))
+    inf_vec = lemmatizing_text(text.split(' '), language=language)
     inf_vec = [l for l in inf_vec if len(l) > 0]
     return inf_vec
 
@@ -66,8 +76,9 @@ list(tuple(int, float))
 
 def get_recommandations(inf_vec, n, corpus):
     global models
-    recommandation_indexes = models[corpus].dv.similar_by_vector(
-        models[corpus].infer_vector(inf_vec), topn=n)  # ,restrict_vocab=10000)
+    model =  models[corpus][0]
+    recommandation_indexes =model.dv.similar_by_vector(
+        model.infer_vector(inf_vec), topn=n)  # ,restrict_vocab=10000)
     return recommandation_indexes[:n]
 
 
@@ -105,7 +116,7 @@ def gensim():
         n = requestJson["n"]
         corpus = requestJson["corpus"]
         print("-- query: {} --".format(text))
-        inf_vec = convert_to_inf_vec(text=text)
+        inf_vec = convert_to_inf_vec(text=text, language=models[corpus][1])
         recommandation_indexes = get_recommandations(
             inf_vec=inf_vec, n=n, corpus=corpus)
         result = convert_to_json(recommandation_indexes)
@@ -125,6 +136,20 @@ def post_models(corpus):
     d2v_file = None
     syn1neg_file = None
     vector_file = None
+    language = None
+    if request.form.get("password") is not None:
+        if request.form['password'] != SECRET_KEY:
+            return "le mot de passe n'est pas valide", 401
+    else:
+        return "le mot de passe doit être présent", 401
+    if request.form.get("language") is not None:
+        if request.form["language"] != ENG and request.form["language"] != FR:
+            return "On ne supporte que le français (french) et l'anglais (english) pour le moment; reçus {}".format(request.form["language"]), 401
+        else:
+            language = request.form["language"]
+    else:
+        return "la langue doit être spécifiée", 401
+
     if request.files.get('d2v.model') is not None:
         if request.files.get('d2v.model').filename != "d2v.model":
             return "le modèle n'a pas été envoyé", 401
@@ -142,18 +167,18 @@ def post_models(corpus):
             syn1neg_file = request.files['d2v.model.syn1neg.npy']
             vector_file = request.files['d2v.model.wv.vectors.npy']
 
-    if request.form['password'] != SECRET_KEY:
-        return "le mot de passe n'est pas valide", 401
-
     if not os.path.exists(Path("./models/{}".format(corpus))):
         os.makedirs(Path("./models/{}".format(corpus)))
 
-    d2v_file.save("models/{}/{}".format(corpus, d2v_file.filename))
+    d2v_file.save("models/{}/d2v_{}.model".format(corpus, language))
     if syn1neg_file is not None:
-        syn1neg_file.save("models/{}/{}".format(corpus, syn1neg_file.filename))
-        vector_file.save("models/{}/{}".format(corpus, vector_file.filename))
+        syn1neg_file.save(
+            "models/{}/d2v_{}.model.syn1neg.npy".format(corpus, language))
+        vector_file.save(
+            "models/{}/d2v_{}.model.wv.vectors.npy".format(corpus, language))
 
-    models[corpus] = Word2Vec.load(str("models/{}/{}".format(corpus, d2v_file.filename)))
+    models[corpus] = Word2Vec.load(
+        str("models/{}/d2v_{}.model".format(corpus, language)))
 
     return "Le modèle {} à été changer".format(corpus)
 

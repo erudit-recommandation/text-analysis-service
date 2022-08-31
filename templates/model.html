@@ -17,14 +17,20 @@
     <label for="d2v.model">d2v.model</label>
     <p><input type="file" name="d2v.model" accept=".model"></p>
     {% if largerModel %}
-      <label for="d2v.model.syn1neg.npy">d2v.model.syn1neg.npy</label>
-      <p><input type="file" name="d2v.model.syn1neg.npy" accept=".model.syn1neg.npy"></p>
+    <label for="d2v.model.syn1neg.npy">d2v.model.syn1neg.npy</label>
+    <p><input type="file" name="d2v.model.syn1neg.npy" accept=".model.syn1neg.npy"></p>
 
-      <label for="d2v.model.wv.vectors.npy">d2v.model.wv.vectors.npy</label>
-      <p><input type="file" name="d2v.model.wv.vectors.npy" accept=".model.wv.vectors.npy"></p>
+    <label for="d2v.model.wv.vectors.npy">d2v.model.wv.vectors.npy</label>
+    <p><input type="file" name="d2v.model.wv.vectors.npy" accept=".model.wv.vectors.npy"></p>
     {% endif %}
+    <label for="language"> Langue</label>
+    <br>
+    <select name="language">
+      <option value="english" selected>english</option>
+      <option value="french">french</option>
+    </select>
+    <br>
 
-    
 
     <label for="password"> mot de passe </label>
     <p><input type="password" name="password"></p>
