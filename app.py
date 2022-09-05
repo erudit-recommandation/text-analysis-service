@@ -1,17 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 import gensim
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument, Word2Vec
-from gnomonics.preprocessing import lemmatizing_text
-from nltk.tokenize import word_tokenize
+from gensim.models.doc2vec import Word2Vec
+#from gnomonics.preprocessing import lemmatizing_text
+#from nltk.tokenize import word_tokenize
 from pathlib import Path
-import nltk
+#import nltk
 import json
 import argparse
 import os
 import time
 from dotenv import dotenv_values
 import operator
+import spacy
 
 import argparse
 
@@ -59,12 +60,28 @@ for file in os.listdir("./models"):
 convert an input text to an inferance vector
 """
 
+def simple_preprocess(text):
+    text_new = ' '.join(gensim.utils.simple_preprocess(text, min_len=3, deacc=False))
+    return text_new
+
+allowed_pos = ['NOUN', 'ADJ', 'VERB', 'PROPN']
 
 def convert_to_inf_vec(text, language):
     print("--{}--".format(language))
-    inf_vec = lemmatizing_text(text.split(' '), language=language)
-    inf_vec = [l for l in inf_vec if len(l) > 0]
+    if language == 'french':
+        sp = spacy.load('fr_core_news_sm',disable=['parser','ner'])
+    else:   
+        sp = spacy.load('en_core_web_sm',disable=['parser','ner'])
+    sp.max_length = 50000000
+    inf_vec = simple_preprocess(' '.join([word.lemma_ for word in sp(text) if word.pos_ in allowed_pos]))
     return inf_vec
+
+
+#def convert_to_inf_vec(text, language):
+#    print("--{}--".format(language))
+#    inf_vec = lemmatizing_text(text.split(' '), language=language)
+#    inf_vec = [l for l in inf_vec if len(l) > 0]
+#    return inf_vec
 
 
 """
