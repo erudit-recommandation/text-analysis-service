@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 import gensim
 from gensim.models.doc2vec import Word2Vec
-#from gnomonics.preprocessing import lemmatizing_text
+from gnomonics.preprocessing import lemmatizing_text
 #from nltk.tokenize import word_tokenize
 from pathlib import Path
 #import nltk
@@ -41,6 +41,9 @@ SECRET_KEY = config["SECRET"]
 models = {}
 FR = "french"
 ENG = "english"
+
+allowed_pos = ['NOUN', 'ADJ', 'VERB', 'PROPN']
+
 for file in os.listdir("./models"):
     d = os.path.join("./models", file)
     if os.path.isdir(d):
@@ -60,28 +63,33 @@ for file in os.listdir("./models"):
 convert an input text to an inferance vector
 """
 
+
 def simple_preprocess(text):
-    text_new = ' '.join(gensim.utils.simple_preprocess(text, min_len=3, deacc=False))
+    text_new = ' '.join(gensim.utils.simple_preprocess(
+        text, min_len=3, deacc=False))
     return text_new
 
-allowed_pos = ['NOUN', 'ADJ', 'VERB', 'PROPN']
 
+"""
 def convert_to_inf_vec(text, language):
     print("--{}--".format(language))
-    if language == 'french':
-        sp = spacy.load('fr_core_news_sm',disable=['parser','ner'])
-    else:   
-        sp = spacy.load('en_core_web_sm',disable=['parser','ner'])
+    if language == FR:
+        sp = spacy.load('fr_core_news_sm', disable=['parser', 'ner'])
+    else:
+        sp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
     sp.max_length = 50000000
-    inf_vec = simple_preprocess(' '.join([word.lemma_ for word in sp(text) if word.pos_ in allowed_pos]))
+    inf_vec = simple_preprocess(
+        ' '.join([word.lemma_ for word in sp(text) if word.pos_ in allowed_pos]))
+    print("here: ", inf_vec)
     return inf_vec
+"""
 
 
-#def convert_to_inf_vec(text, language):
-#    print("--{}--".format(language))
-#    inf_vec = lemmatizing_text(text.split(' '), language=language)
-#    inf_vec = [l for l in inf_vec if len(l) > 0]
-#    return inf_vec
+def convert_to_inf_vec(text, language):
+    print("--language: {}--".format(language))
+    inf_vec = lemmatizing_text(text.split(' '), language=language)
+    inf_vec = [l for l in inf_vec if len(l) > 0]
+    return inf_vec
 
 
 """
@@ -93,8 +101,8 @@ list(tuple(int, float))
 
 def get_recommandations(inf_vec, n, corpus):
     global models
-    model =  models[corpus][0]
-    recommandation_indexes =model.dv.similar_by_vector(
+    model = models[corpus][0]
+    recommandation_indexes = model.dv.similar_by_vector(
         model.infer_vector(inf_vec), topn=n)  # ,restrict_vocab=10000)
     return recommandation_indexes[:n]
 
@@ -123,7 +131,7 @@ def hello_world():
 
 
 @app.route("/gensim", methods=['POST'], strict_slashes=False)
-def gensim():
+def run_gensim():
     if models is None:
         return "Le modèle n'est pas définit contacter l'administrator", 500
     content_type = request.headers.get('Content-Type')
