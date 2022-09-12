@@ -202,8 +202,8 @@ def post_models(corpus):
         vector_file.save(
             "models/{}/d2v_{}.model.wv.vectors.npy".format(corpus, language))
 
-    models[corpus] = Word2Vec.load(
-        str("models/{}/d2v_{}.model".format(corpus, language)))
+    models[corpus] = (Word2Vec.load(
+        str("models/{}/d2v_{}.model".format(corpus, language))), language)
 
     return "Le modèle {} à été changer".format(corpus)
 
